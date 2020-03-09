@@ -48,7 +48,7 @@ def multiple_ints(first_value: int, second_value: int) -> int:
     Returns:
         Product of elements
     """
-    if type(first_value) == int and type(second_value) == int:
+    if isinstance(first_value, int) and isinstance(second_value, int):
         return first_value * second_value
     else:
         raise TypeError
@@ -82,8 +82,7 @@ def multiple_ints_with_conversion(first_value: Any, second_value: Any) -> int:
         >>> "Not valid input data"
     """
     try:
-        first = int(first_value)
-        second = int(second_value)
+        first, second = int(first_value), int(second_value)
     except ValueError:
         raise ValueError
     return first * second
@@ -105,7 +104,7 @@ def is_word_in_text(word: str, text: str) -> bool:
         >>> False
 
     """
-    return word in text.split()
+    return word in text
 
 
 def some_loop_exercise() -> list:
@@ -136,8 +135,7 @@ def alphabet() -> dict:
         >>> {"a": 1, "b": 2 ...}
     """
     from string import ascii_lowercase
-    return {i: j for i, j in enumerate(ascii_lowercase, start=1)}
-
+    return dict(enumerate(ascii_lowercase, start=1))
 
 def simple_sort(data: List[int]) -> List[list]:
     """
