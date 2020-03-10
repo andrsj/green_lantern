@@ -48,7 +48,8 @@ def multiple_ints(first_value: int, second_value: int) -> int:
     Returns:
         Product of elements
     """
-    if isinstance(first_value, int) and isinstance(second_value, int):
+    if isinstance(first_value, int) and not isinstance(first_value, bool) and \
+       isinstance(second_value, int) and not isinstance(second_value, bool):
         return first_value * second_value
     else:
         raise TypeError
@@ -83,7 +84,7 @@ def multiple_ints_with_conversion(first_value: Any, second_value: Any) -> int:
     """
     try:
         first, second = int(first_value), int(second_value)
-    except ValueError:
+    except (ValueError, TypeError):
         raise ValueError
     return first * second
 
@@ -137,6 +138,7 @@ def alphabet() -> dict:
     from string import ascii_lowercase
     return dict(enumerate(ascii_lowercase, start=1))
 
+
 def simple_sort(data: List[int]) -> List[list]:
     """
     Sort list of ints without using built-in methods.
@@ -148,7 +150,7 @@ def simple_sort(data: List[int]) -> List[list]:
     while swap:
         swap = False
         for i in range(len(data) - 1):
-            if data[i] > data[i+1]:
-                data[i], data[i+1] = data[i+1],data[i]
+            if data[i] > data[i + 1]:
+                data[i], data[i + 1] = data[i + 1], data[i]
                 swap = True
     return data
