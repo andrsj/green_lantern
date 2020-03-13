@@ -27,4 +27,6 @@ class Dog(Animal):
 
 
 if __name__ == "__main__":
-    animal = Animal(name="H", weight=2)
+    animal = Dog(name="H", weight=2)
+    print(animal.sound())
+

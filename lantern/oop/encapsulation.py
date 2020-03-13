@@ -20,7 +20,6 @@ class SmallCat(Cat):
 if __name__ == "__main__":
     cat = Cat(name="Simba")
     print(cat.get_name())
-    print(cat._name)
 
     small_cat = SmallCat(name="Petya")
     print(small_cat.get_private_name())
