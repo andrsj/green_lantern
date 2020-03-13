@@ -1,5 +1,5 @@
-# Шпаргалка 
+# Reposetory for HW on CURSOR.EDU
 
-## В цьому репозиторії ви зможете знайти матеріал лекцій та домашні завдання
+## In this reposetory i will be push done homework from lesson
 
-## Приємного навчання :)
+## I bealive my code is readable and clear ;3
