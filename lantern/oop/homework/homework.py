@@ -100,6 +100,7 @@ class Cheetah(Cat):
       if age grosser 15(not including) return 40
 
     """
+
     def eat(self, product):
         products = {
             'gazelle': 30,
@@ -115,7 +116,6 @@ class Cheetah(Cat):
             return 75
         else:
             return 40
-
 
 
 class Wall:
@@ -229,7 +229,6 @@ class Door:
         except KeyError:
             raise ValueError('Sorry we don\'t have such material')
 
-
     def update_wood_price(self, new_price):
         Door.wood_price = new_price
 
@@ -314,7 +313,7 @@ class House:
 
     def create_roof(self, width, height, roof_type):
         check_valid_width_and_height(width, height)
-        if self.__roof != None:
+        if self.__roof is not None:
             raise ValueError('The house can not have two roofs')
         self.__roof = Roof(width, height, roof_type)
 
@@ -324,7 +323,7 @@ class House:
 
     def create_door(self, width, height):
         check_valid_width_and_height(width, height)
-        if self.__door != None:
+        if self.__door is not None:
             raise ValueError('The house can not have two doors')
         self.__door = Door(width, height)
 
@@ -374,15 +373,12 @@ if __name__ == '__main__':
     house.create_door(1, 2)
     house.create_window(3, 1)
 
-
-
     print("Test house:")
     print(f'Walls square -> {house.get_walls_square()}')
     print(f'Windows square -> {house.get_windows_square()}')
     print(f'Door square -> {house.get_door_square()}')
     print(f'Actual number of wallpaper: {house.get_number_of_rolls_of_wallpapers(0.53, 10)}')
     print(f'Except number of wallpaper: {22}')
-
 
 '''
 10 2.5
