@@ -141,9 +141,11 @@ class Wall:
         return self.width * self.height
 
     def number_of_rolls_of_wallpaper(self, roll_width_m, roll_length_m):
+        # roll_width_m and roll_length_m allways grosser than 0
+        # rounding down use only for positive number - using int()
         count_lines_in_rool = int(roll_length_m / self.height)
         count_lines = int(self.width / roll_width_m)
-        return int(count_lines / count_lines_in_rool)
+        return count_lines / count_lines_in_rool
 
 
 class Roof:
@@ -235,6 +237,11 @@ class Door:
         Door.metal_price = new_price
 
 
+def check_valid_width_and_height(width, height):
+    if width <= 0 or height <= 0:
+        raise ValueError("Value must be not 0")
+
+
 class House:
     """
     !!!! DON'T WRITE NEW METHODS TO THIS CLASS EXCEPT FOR THOSE LISTED BELOW !!!
@@ -300,27 +307,23 @@ class House:
         self.__door = None
 
     def create_wall(self, width, height):
-        if width <= 0 or height <= 0:
-            raise ValueError("Value must be not 0")
+        check_valid_width_and_height(width, height)
         if len(self.__walls) >= 4:
             raise ValueError('Our house can not have more than 4 walls')
         self.__walls.append(Wall(width, height))
 
     def create_roof(self, width, height, roof_type):
-        if width <= 0 or height <= 0:
-            raise ValueError("Value must be not 0")
+        check_valid_width_and_height(width, height)
         if self.__roof != None:
             raise ValueError('The house can not have two roofs')
         self.__roof = Roof(width, height, roof_type)
 
     def create_window(self, width, height):
-        if width <= 0 or height <= 0:
-            raise ValueError("Value must be not 0")
+        check_valid_width_and_height(width, height)
         self.__windows.append(Window(width, height))
 
     def create_door(self, width, height):
-        if width <= 0 or height <= 0:
-            raise ValueError("Value must be not 0")
+        check_valid_width_and_height(width, height)
         if self.__door != None:
             raise ValueError('The house can not have two doors')
         self.__door = Door(width, height)
@@ -373,7 +376,7 @@ if __name__ == '__main__':
 
 
 
-    print("Test room square:")
+    print("Test house:")
     print(f'Walls square -> {house.get_walls_square()}')
     print(f'Windows square -> {house.get_windows_square()}')
     print(f'Door square -> {house.get_door_square()}')
