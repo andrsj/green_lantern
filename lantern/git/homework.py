@@ -38,16 +38,15 @@ def multiple_ints(first_value: int, second_value: int) -> int:
     """
     Should calculate product of all args.
     if first_value or second_value is not int should raise TypeError
-
     Raises:
         TypeError
-
     Params:
         first_value: value for multiply
         second_value
     Returns:
         Product of elements
     """
+
     if isinstance(first_value, int) and not isinstance(first_value, bool) and \
        isinstance(second_value, int) and not isinstance(second_value, bool):
         return first_value * second_value
@@ -55,20 +54,17 @@ def multiple_ints(first_value: int, second_value: int) -> int:
         raise TypeError
 
 
+
 def multiple_ints_with_conversion(first_value: Any, second_value: Any) -> int:
     """
     If possible to convert arguments to int value - convert and multiply them.
     If it is impossible raise ValueError
-
     Args:
         first_value: number for multiply
         second_value: number for multiply
-
     Raises:
         ValueError
-
     Returns: multiple of two numbers.
-
     Examples:
         multiple_ints_with_conversion(6, 6)
         >>> 36
@@ -83,27 +79,25 @@ def multiple_ints_with_conversion(first_value: Any, second_value: Any) -> int:
         >>> "Not valid input data"
     """
     try:
-        first, second = int(first_value), int(second_value)
+        first_value = int(first_value)
+        second_value = int(second_value)
+        return first_value * second_value
     except (ValueError, TypeError):
-        raise ValueError
-    return first * second
+        raise ValueError("Not valid input data")
 
 
 def is_word_in_text(word: str, text: str) -> bool:
     """
     If text contain word return True
     In another case return False.
-
     Args:
         word: Searchable substring
         text: Text for search
-
     Examples:
         is_word_in_text("Hello", "Hello word")
         >>> True
         is_word_in_text("Glad", "Nice to meet you ")
         >>> False
-
     """
     return word in text
 
@@ -113,6 +107,7 @@ def some_loop_exercise() -> list:
     Use loop to create list that contain int values from 0 to 12 except 6 and 7
     """
     return [i for i in range(13) if i != 6 and i != 7]
+
 
 
 def remove_from_list_all_negative_numbers(data: List[int]) -> list:
@@ -154,3 +149,4 @@ def simple_sort(data: List[int]) -> List[list]:
                 data[i], data[i + 1] = data[i + 1], data[i]
                 swap = True
     return data
+
