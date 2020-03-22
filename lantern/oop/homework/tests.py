@@ -1,6 +1,6 @@
 import pytest
 
-from homework import Cat, Cheetah, House
+from lantern.oop.homework.homework import Cat, Cheetah, House
 
 
 @pytest.mark.parametrize("age, food, result", [

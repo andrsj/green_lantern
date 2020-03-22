@@ -1,5 +1,5 @@
 import pytest
-from lonely_robot import Robot, Asteroid, MissAsteroidError
+from lantern.tdd.lonely_robot import Robot, Asteroid, MissAsteroidError
 
 
 class TestRobotCreation:

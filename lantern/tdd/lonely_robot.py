@@ -15,3 +15,13 @@ class Robot:
 
 class MissAsteroidError(Exception):
     pass
+
+# Agenda:
+#
+#     Create Robot with position and direction
+#     Check if Robot miss asteroid while landing
+#     Create and test turn_left and turn_right functions
+#     Add move_forward, move_backward functions
+#     Check if it falls from asteroid during movement
+#     Add asteroid obstacles
+#     Update robot movement to respect obstacles
