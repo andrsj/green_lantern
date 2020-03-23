@@ -1,17 +1,38 @@
+from functools import partial
+import random
+
+
+class Obstacles:
+
+    def __init__(self, x: int, y: int):
+        self.coordinates = x, y
+
+
 class Asteroid:
-    def __init__(self, x:int, y:int):
+
+    def __init__(self, x: int, y: int):
+        self._obstacles = []
         self.x = x
         self.y = y
+        for _ in range(x // 10 + y // 10):
+            self.create_obstacles()
 
     def __str__(self):
         return f'Asteroid x = {self.x},\ty = {self.y}'
+
+    def create_obstacles(self, x: int = None, y: int = None):
+        if x:
+            x = random.randint(2, self.x - 2)
+        if y:
+            y = random.randint(2, self.y - 2)
+        self._obstacles.append(Obstacles(x, y))
 
 
 class Robot:
 
     _directions = ['N', 'W', 'S', 'E']
 
-    def __init__(self, x:int, y:int, asteroid:Asteroid, direction:str):
+    def __init__(self, x: int, y: int, asteroid: Asteroid, direction: str):
         self.x = x
         self.y = y
         self.asteroid = asteroid
@@ -25,13 +46,13 @@ class Robot:
     def __str__(self):
         return f'Robot x = {self.x}, y = {self.y}, direction = {self.direction}\nAsteroid: {self.asteroid}'
 
-    def turn_left(self):
-        self.direction = Robot._directions[Robot._directions.index(self.direction) - 1]
+    def turn_left(self, times: int = 1):
+        self.direction = Robot._directions[(Robot._directions.index(self.direction) - times) % len(Robot._directions)]
 
-    def turn_right(self):
-        self.direction = Robot._directions[(Robot._directions.index(self.direction) + 1) % len(Robot._directions)]
+    def turn_right(self, times: int = 1):
+        self.direction = Robot._directions[(Robot._directions.index(self.direction) + times) % len(Robot._directions)]
 
-    def __change_coord_value(self, value, x_direction=True):
+    def __change_coord_value(self, value: int, x_direction: bool = True):
         if x_direction:
             if self.x + value <= self.asteroid.x and self.x >= 0:
                 self.x += value
@@ -43,23 +64,23 @@ class Robot:
             else:
                 raise FallingRobot
 
-    def move_forward(self, value=1):
+    def move_forward(self, value: int = 1):
         moves = {
-            'N': (self.__change_coord_value, {'value': value, 'x_direction': False}),
-            'W': (self.__change_coord_value, {'value': value}),
-            'S': (self.__change_coord_value, {'value': -value, 'x_direction': False}),
-            'E': (self.__change_coord_value, {'value': -value})
+            'N': partial(self.__change_coord_value, value, False),
+            'W': partial(self.__change_coord_value, value),
+            'S': partial(self.__change_coord_value, -value, False),
+            'E': partial(self.__change_coord_value, -value)
         }
-        moves[self.direction][0](**moves[self.direction][1])
+        moves[self.direction]()
 
-    def move_backward(self, value=1):
+    def move_backward(self, value: int = 1):
         moves = {
-            'N': (self.__change_coord_value, {'value': -value, 'x_direction': False}),
-            'W': (self.__change_coord_value, {'value': -value}),
-            'S': (self.__change_coord_value, {'value': value, 'x_direction': False}),
-            'E': (self.__change_coord_value, {'value': value})
+            'N': partial(self.__change_coord_value, -value, False),
+            'W': partial(self.__change_coord_value, -value),
+            'S': partial(self.__change_coord_value, value, False),
+            'E': partial(self.__change_coord_value, value)
         }
-        moves[self.direction][0](**moves[self.direction][1])
+        moves[self.direction]()
 
 
 class MissAsteroidError(Exception):
@@ -81,5 +102,5 @@ class FallingRobot(Exception):
 #     + Create and test turn_left and turn_right functions
 #     + Add move_forward, move_backward functions
 #     + Check if it falls from asteroid during movement
-#     Add asteroid obstacles
+#     + Add asteroid obstacles
 #     Update robot movement to respect obstacles
