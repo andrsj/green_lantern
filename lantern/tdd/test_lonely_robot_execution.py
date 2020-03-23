@@ -6,7 +6,7 @@ class TestAsteroidAndRobotCreation:
     def test_parameters(self):
         x, y = 10, 15
         asteroid = lonely_robot.Asteroid(x, y)
-        assert len(asteroid._obstacles) == 2
+        assert len(asteroid.obstacles) == 2
 
         robot = lonely_robot.Robot(x, y, asteroid, 'N')
         assert robot.x == 10
@@ -21,12 +21,12 @@ class TestAsteroidAndRobotCreation:
             ((11, 11), 2),
             ((31, 35), 6),
             ((9, 11), 1),
-            ((101, 101), 20)
+            ((101, 101), 20),
         )
     )
-    def test_to_many_obstacles(self, asteroid_size: tuple, count_of_obstacles: int):
+    def test_how_many_obstacles(self, asteroid_size: tuple, count_of_obstacles: int):
         asteroid = lonely_robot.Asteroid(*asteroid_size)
-        assert len(asteroid._obstacles) == count_of_obstacles
+        assert len(asteroid.obstacles) == count_of_obstacles
 
     @pytest.mark.parametrize(
         'direction',
@@ -34,7 +34,7 @@ class TestAsteroidAndRobotCreation:
     )
     def test_check_wrong_direction(self, direction: str):
         asteroid = lonely_robot.Asteroid(10, 10)
-        with pytest.raises(lonely_robot.InvalidDirection):
+        with pytest.raises(lonely_robot.InvalidDirectionError):
             lonely_robot.Robot(5, 5, asteroid, direction)
 
     @pytest.mark.parametrize(
@@ -43,12 +43,27 @@ class TestAsteroidAndRobotCreation:
             ((15, 25), (26, 30)),
             ((15, 25), (26, 24)),
             ((15, 25), (15, 27)),
+            ((5, 5), (-2, 0)),
         )
     )
     def test_check_if_robot_on_asteroid(self, asteroid_size: tuple, robot_coordinates: tuple):
         with pytest.raises(lonely_robot.MissAsteroidError):
             asteroid = lonely_robot.Asteroid(*asteroid_size)
             lonely_robot.Robot(*robot_coordinates, asteroid, 'N')
+
+    @pytest.mark.parametrize(
+        "coordinates",
+        (
+            (15, 15),
+            (10, 10),
+            (7, 4),
+        )
+    )
+    def test_check_if_robot_on_obstacles(self, coordinates):
+        asteroid = lonely_robot.Asteroid(30, 25)
+        asteroid.create_obstacles(*coordinates)
+        with pytest.raises(lonely_robot.CrashRobotByObstaclesError):
+            lonely_robot.Robot(*coordinates, asteroid, 'W')
 
 
 @pytest.fixture()
@@ -131,9 +146,15 @@ class TestMovingRobot:
     def test_falls_after_moving(self):
         robot = self._robot
 
-        with pytest.raises(lonely_robot.FallingRobot):
+        with pytest.raises(lonely_robot.FallingRobotError):
             robot.move_forward(16)
 
         robot.turn_left()
-        with pytest.raises(lonely_robot.FallingRobot):
+        with pytest.raises(lonely_robot.FallingRobotError):
             robot.move_backward(16)
+
+    def test_falls_in_obstacle(self):
+        asteroid, robot = self._asteroid, self._robot
+        asteroid.create_obstacles(15, 17)
+        with pytest.raises(lonely_robot.CrashRobotByObstaclesError):
+            robot.move_forward(2)

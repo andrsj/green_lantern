@@ -5,13 +5,14 @@ import random
 class Obstacles:
 
     def __init__(self, x: int, y: int):
-        self.coordinates = x, y
+        self.x = x
+        self.y = y
 
 
 class Asteroid:
 
     def __init__(self, x: int, y: int):
-        self._obstacles = []
+        self.obstacles = []
         self.x = x
         self.y = y
         for _ in range(x // 10 + y // 10):
@@ -21,11 +22,11 @@ class Asteroid:
         return f'Asteroid x = {self.x},\ty = {self.y}'
 
     def create_obstacles(self, x: int = None, y: int = None):
-        if x:
+        if not x:
             x = random.randint(2, self.x - 2)
-        if y:
+        if not y:
             y = random.randint(2, self.y - 2)
-        self._obstacles.append(Obstacles(x, y))
+        self.obstacles.append(Obstacles(x, y))
 
 
 class Robot:
@@ -39,9 +40,13 @@ class Robot:
         if direction.upper() in Robot._directions:
             self.direction = direction.upper()
         else:
-            raise InvalidDirection
-        if self.x > self.asteroid.x or self.y > self.asteroid.y:
+            raise InvalidDirectionError
+        if self.x > self.asteroid.x or self.y > self.asteroid.y or \
+           self.x < 0 or self.y < 0:
             raise MissAsteroidError
+        for obstacle in self.asteroid.obstacles:
+            if self.x == obstacle.x and self.y == obstacle.y:
+                raise CrashRobotByObstaclesError
 
     def __str__(self):
         return f'Robot x = {self.x}, y = {self.y}, direction = {self.direction}\nAsteroid: {self.asteroid}'
@@ -54,15 +59,26 @@ class Robot:
 
     def __change_coord_value(self, value: int, x_direction: bool = True):
         if x_direction:
-            if self.x + value <= self.asteroid.x and self.x >= 0:
-                self.x += value
+            if self.asteroid.x >= self.x + value >= 0:
+                for _ in range(abs(value)):
+                    self.x += 1 if value > 0 else -1
+                    for obstacle in self.asteroid.obstacles:
+                        if self.x == obstacle.x and self.y == obstacle.y:
+                            raise CrashRobotByObstaclesError
             else:
-                raise FallingRobot
+                for obstacle in self.asteroid.obstacles:
+                    if self.x == obstacle.x and self.y == obstacle.y:
+                        raise CrashRobotByObstaclesError
+                raise FallingRobotError
         else:
-            if self.y + value <= self.asteroid.y and self.y >= 0:
-                self.y += value
+            if self.asteroid.y >= self.y + value >= 0:
+                for _ in range(abs(value)):
+                    self.y += 1 if value > 0 else -1
+                    for obstacle in self.asteroid.obstacles:
+                        if self.x == obstacle.x and self.y == obstacle.y:
+                            raise CrashRobotByObstaclesError
             else:
-                raise FallingRobot
+                raise FallingRobotError
 
     def move_forward(self, value: int = 1):
         moves = {
@@ -87,13 +103,16 @@ class MissAsteroidError(Exception):
     pass
 
 
-class InvalidDirection(Exception):
+class InvalidDirectionError(Exception):
     pass
 
 
-class FallingRobot(Exception):
+class FallingRobotError(Exception):
     pass
 
+
+class CrashRobotByObstaclesError(Exception):
+    pass
 
 # Agenda:
 #
