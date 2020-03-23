@@ -41,8 +41,7 @@ class Robot:
             self.direction = direction.upper()
         else:
             raise InvalidDirectionError
-        if self.x > self.asteroid.x or self.y > self.asteroid.y or \
-           self.x < 0 or self.y < 0:
+        if not (self.asteroid.x >= self.x >= 0 and self.asteroid.y >= self.y >= 0):
             raise MissAsteroidError
         for obstacle in self.asteroid.obstacles:
             if self.x == obstacle.x and self.y == obstacle.y:
