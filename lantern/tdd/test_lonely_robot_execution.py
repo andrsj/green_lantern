@@ -81,7 +81,7 @@ class TestMovingRobot:
 
     def test_turn_left_one_time(self):
         robot = self._robot
-        for direction in ['E', 'S', 'W', 'N']:
+        for direction in ['W', 'S', 'E', 'N']:
             robot.turn_left()
             assert robot.direction == direction
 
@@ -89,8 +89,8 @@ class TestMovingRobot:
         'input_times, excepted_direction',
         (
             (2, 'S'),
-            (3, 'W'),
-            (15, 'W')
+            (3, 'E'),
+            (15, 'E')
         )
     )
     def test_turn_left_no_one_time(self, input_times: int, excepted_direction: str):
@@ -100,7 +100,7 @@ class TestMovingRobot:
 
     def test_turn_right_one_time(self):
         robot = self._robot
-        for direction in ['W', 'S', 'E', 'N']:
+        for direction in ['E', 'S', 'W', 'N']:
             robot.turn_right()
             assert robot.direction == direction
 
@@ -108,8 +108,8 @@ class TestMovingRobot:
         'input_times, excepted_direction',
         (
             (2, 'S'),
-            (3, 'E'),
-            (13, 'W')
+            (3, 'W'),
+            (13, 'E')
         )
     )
     def test_turn_right_no_one_time(self, input_times: int, excepted_direction: str):

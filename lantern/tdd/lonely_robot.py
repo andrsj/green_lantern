@@ -31,7 +31,7 @@ class Asteroid:
 
 class Robot:
 
-    _directions = ['N', 'W', 'S', 'E']
+    _directions = ['N', 'E', 'S', 'W']
 
     def __init__(self, x: int, y: int, asteroid: Asteroid, direction: str):
         self.x = x
@@ -82,18 +82,18 @@ class Robot:
     def move_forward(self, value: int = 1):
         moves = {
             'N': partial(self.__change_coord_value, value, False),
-            'W': partial(self.__change_coord_value, value),
+            'E': partial(self.__change_coord_value, value),
             'S': partial(self.__change_coord_value, -value, False),
-            'E': partial(self.__change_coord_value, -value)
+            'W': partial(self.__change_coord_value, -value)
         }
         moves[self.direction]()
 
     def move_backward(self, value: int = 1):
         moves = {
             'N': partial(self.__change_coord_value, -value, False),
-            'W': partial(self.__change_coord_value, -value),
+            'E': partial(self.__change_coord_value, -value),
             'S': partial(self.__change_coord_value, value, False),
-            'E': partial(self.__change_coord_value, value)
+            'W': partial(self.__change_coord_value, value)
         }
         moves[self.direction]()
 
