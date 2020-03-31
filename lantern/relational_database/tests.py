@@ -42,8 +42,8 @@ class TestSQLQueries(unittest.TestCase):
             cursor.execute(f"SELECT 1 FROM pg_catalog.pg_user WHERE usename = '{user}'")
             if cursor.fetchone():
                 cursor.execute(f"DROP ROLE {user}")
+            cursor.execute("SET lc_monetary TO 'en_US.UTF-8';")
             conn.commit()
-
 
     @staticmethod
     def create_test_database_and_role(conn):
@@ -54,6 +54,7 @@ class TestSQLQueries(unittest.TestCase):
             cursor.execute(f"CREATE ROLE {user} WITH LOGIN CREATEDB PASSWORD '{password}'")
             cursor.execute(f"CREATE DATABASE {database}")
             cursor.execute(f"GRANT ALL PRIVILEGES ON DATABASE {database} to {user};")
+            cursor.execute("SET lc_monetary TO 'en_US.UTF-8';")
             conn.commit()
 
     @classmethod
@@ -67,6 +68,7 @@ class TestSQLQueries(unittest.TestCase):
     def setUp(self) -> None:
         self.conn = psycopg2.connect(**TEST_DATABASE)
         with self.conn.cursor() as cursor:
+            cursor.execute("SET LOCAL lc_monetary = 'en_US.UTF-8';")
             init_tables(cursor)
             fill_tables(cursor)
         self.conn.commit()
@@ -156,7 +158,7 @@ class TestSQLQueries(unittest.TestCase):
         with self.conn.cursor(cursor_factory=RealDictCursor) as cursor:
             actual_result = task_8_count_customers_by_city(cursor)
             actual_result = [dict(record) for record in actual_result]
-            expected_result = self.load_rows_from_file("task_8.json")
+            expected_result = self.load_rows_from_file("task_8_fixed.json")
 
         for i, row in enumerate(actual_result):
             self.assertDictEqual(row, expected_result[i])
