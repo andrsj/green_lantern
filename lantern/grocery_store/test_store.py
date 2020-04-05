@@ -39,11 +39,30 @@ class TestUsers(Initializer):
             json={'name':'John Doe'}
         )
         user_id = resp.json['user_id']
-        resp = self.client.get(f'/users/{user_id}')
+        resp = self.client.get(f'/user/{user_id}')
         assert resp.status_code == 200
         assert resp.json == {'name':'John Doe'}
 
     def test_get_unexistent_user(self):
-        resp = self.client.get(f'/users/1')
+        resp = self.client.get(f'/user/1')
+        assert resp.status_code == 404
+        assert resp.json == {'error':'No such user_id 1'}
+
+    def test_successful_update_user(self):
+        resp = self.client.post(
+            '/users',
+            json={'name':'John Doe'}
+        )
+        user_id = resp.json['user_id']
+
+        resp = self.client.put(
+            f'/user/{user_id}',
+            json={'name': 'Johanna Doe'}
+        )
+        assert resp.status_code == 200
+        assert resp.json == {'status': 'success'}
+
+    def test_update_unexistent_user(self):
+        resp = self.client.put(f'/user/1')
         assert resp.status_code == 404
         assert resp.json == {'error':'No such user_id 1'}

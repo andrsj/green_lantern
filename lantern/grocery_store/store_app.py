@@ -1,6 +1,6 @@
-from flask import Flask, jsonify, request
-
 import inject
+
+from flask import Flask, jsonify, request
 
 
 class NoSuchUserError(Exception):
@@ -22,8 +22,16 @@ def create_user():
     return jsonify({'user_id': user_id}), 201
 
 
-@app.route('/users/<int:user_id>')
+@app.route('/user/<int:user_id>')
 def get_user(user_id):
     db = inject.instance('DB')
     user = db.users.get_user_by_id(user_id)
     return jsonify(user)
+
+
+@app.route('/user/<int:user_id>', methods=['PUT'])
+def update_user(user_id):
+    db = inject.instance('DB')
+    db.users.update_user_by_id(user_id, request.json)
+
+    return jsonify({'status': 'success'})
