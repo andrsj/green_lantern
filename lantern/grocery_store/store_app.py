@@ -25,7 +25,7 @@ def error_handler_for_user(e):
 
 
 @app.errorhandler(NoSuchStoreError)
-def error_handler_for_user(e):
+def error_handler_for_store(e):
     return jsonify({'error': e.message}), 404
 
 
