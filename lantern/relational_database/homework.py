@@ -20,11 +20,18 @@ def task_1_add_new_record_to_db(con: psycopg2.extensions.connection) -> None:
 
     sql = """
     INSERT INTO customers (customername, contactname, address, city, postalcode, country)
-    VALUES ('Thomas', 'David', 'Some Address', 'London', '774', 'Singapore');
+    VALUES (%(customername)s, %(contactname)s, %(address)s, %(city)s, %(postalcode)s, %(country)s);
     """
     with con.cursor() as cursor:
-        cursor.execute(sql)
-        con.commit()
+        cursor.execute(sql, {
+                'customername': 'Thomas',
+                'contactname': 'David',
+                'address': 'Some Address',
+                'city': 'London',
+                'postalcode': '774',
+                'country': 'Singapore',
+            }
+        )
 
 
 def task_2_list_all_customers(cur: psycopg2.extensions.cursor) -> list:
@@ -72,7 +79,6 @@ def task_4_update_customer(con: psycopg2.extensions.connection) -> None:
 
     with con.cursor() as cursor:
         cursor.execute(sql)
-        con.commit()
 
 
 def task_5_delete_the_last_customer(con: psycopg2.extensions.connection) -> None:
@@ -89,7 +95,6 @@ def task_5_delete_the_last_customer(con: psycopg2.extensions.connection) -> None
     """
     with con.cursor() as cursor:
         cursor.execute(sql)
-        con.commit()
 
 
 def task_6_list_all_supplier_countries(cur: psycopg2.extensions.cursor) -> list:
@@ -103,7 +108,7 @@ def task_6_list_all_supplier_countries(cur: psycopg2.extensions.cursor) -> list:
 
     """
 
-    cur.execute("SELECT country from suppliers;")
+    cur.execute("SELECT country FROM suppliers;")
     return cur.fetchall()
 
 
@@ -118,7 +123,7 @@ def task_7_list_supplier_countries_in_desc_order(cur: psycopg2.extensions.cursor
 
     """
 
-    cur.execute("SELECT country from suppliers ORDER BY country DESC;")
+    cur.execute("SELECT country FROM suppliers ORDER BY country DESC;")
     return cur.fetchall()
 
 
@@ -134,7 +139,7 @@ def task_8_count_customers_by_city(cur: psycopg2.extensions.cursor) -> list:
     """
 
     sql = '''
-    SELECT COUNT(customername), city 
+    SELECT COUNT(customerid), city 
     FROM customers 
     GROUP BY city
     ORDER BY city DESC;
@@ -155,7 +160,7 @@ def task_9_count_customers_by_country_with_than_10_customers(cur: psycopg2.exten
     """
 
     sql = '''
-    SELECT COUNT(customername), country 
+    SELECT COUNT(customerid), country 
     FROM customers 
     GROUP BY country 
     HAVING COUNT(*) > 10;
@@ -186,7 +191,7 @@ def task_11_list_customers_starting_from_11th(cur: psycopg2.extensions.cursor) -
     Returns: 11 records
     """
 
-    cur.execute("SELECT * FROM customers WHERE customerid > 11;")
+    cur.execute("SELECT * FROM customers ORDER BY customerid OFFSET 11 ROWS;")
     return cur.fetchall()
 
 
@@ -203,7 +208,7 @@ def task_12_list_suppliers_from_specified_countries(cur: psycopg2.extensions.cur
     sql = """
     SELECT supplierid, suppliername, contactname, city, country
     FROM suppliers 
-    WHERE country in ('USA','UK','Japan');
+    WHERE country IN ('USA','UK','Japan');
     """
 
     cur.execute(sql)
@@ -222,8 +227,8 @@ def task_13_list_products_from_sweden_suppliers(cur: psycopg2.extensions.cursor)
 
     sql = """
     SELECT p.productname 
-    FROM products as p 
-    INNER JOIN suppliers as s
+    FROM products AS p 
+    INNER JOIN suppliers AS s
     ON p.supplierid = s.supplierid
     WHERE s.country = 'Sweden';
     """
@@ -245,8 +250,8 @@ def task_14_list_products_with_supplier_information(cur: psycopg2.extensions.cur
     sql = """
     SET lc_monetary TO 'en_US.UTF-8';
     SELECT p.productid, p.productname, p.unit, p.price, s.country, s.city, s.suppliername
-    FROM products as p
-    INNER JOIN suppliers as s
+    FROM products AS p
+    INNER JOIN suppliers AS s
     ON p.supplierid = s.supplierid
     """
 
@@ -266,8 +271,8 @@ def task_15_list_customers_with_any_order_or_not(cur: psycopg2.extensions.cursor
 
     sql = """
     SELECT c.customername, c.contactname, c.country, o.orderid
-    FROM customers as c
-    LEFT JOIN orders as o
+    FROM customers AS c
+    LEFT JOIN orders AS o
     ON c.customerid = o.customerid
     """
 
@@ -286,10 +291,10 @@ def task_16_match_all_customers_and_suppliers_by_country(cur: psycopg2.extension
     """
 
     sql = """
-    SELECT c.customername, c.address, c.country as customercountry,
-    s.country as suppliercountry, s.suppliername
-    FROM customers as c
-    FULL JOIN suppliers as s
+    SELECT c.customername, c.address, c.country AS customercountry,
+    s.country AS suppliercountry, s.suppliername
+    FROM customers AS c
+    FULL JOIN suppliers AS s
     ON c.country = s.country
     ORDER BY customercountry, suppliercountry
     """
