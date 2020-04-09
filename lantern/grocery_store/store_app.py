@@ -16,6 +16,9 @@ class NoSuchStoreError(Exception):
 app = Flask(__name__)
 
 
+# I dont use Blueprint for nice format structure of project, because it was studied in the next lecture
+# Sorry for this view, i know it bad way programming style code
+
 @app.errorhandler(NoSuchUserError)
 def error_handler_for_user(e):
     return jsonify({'error': e.message}), 404
@@ -65,6 +68,8 @@ def get_goods():
 def update_goods():
     db = inject.instance('DB')
     count_of_updated_goods, error_id_unsuccesfull_update = db.goods.update_goods(request.json)
+    # I think we need to do custom error for this, but nothing was said about it in the task
+    # For pretty view JSON i split the error
     if error_id_unsuccesfull_update:
         return jsonify(
             {
@@ -81,6 +86,7 @@ def update_goods():
 @app.route('/store', methods=['POST'])
 def create_new_store():
     db = inject.instance('DB')
+    # Checking the user for availability for raise NoSuchUserError
     db.users.get_user_by_id(request.json['manager_id'])
     store_id = db.stores.add(request.json)
     return jsonify({'store_id': store_id}), 201
@@ -96,6 +102,7 @@ def get_store(store_id):
 @app.route('/store/<int:store_id>', methods=['PUT'])
 def update_store(store_id):
     db = inject.instance('DB')
+    # Checking the user for availability for raise NoSuchUserError
     db.users.get_user_by_id(request.json['manager_id'])
     db.stores.update_store_by_id(store_id, request.json)
     return jsonify({'status': 'success'})
