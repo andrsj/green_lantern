@@ -10,7 +10,7 @@ author_works = db.Table(
 class Author(db.Model):
     author_id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
-    works = db.relationship('Book', secondary=author_works, backref=db.backref('author'))
+    works = db.relationship('Book', backref=db.backref('author'))
 
 
 class Book(db.Model):
