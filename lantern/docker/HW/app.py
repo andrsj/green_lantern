@@ -1,12 +1,42 @@
 from flask import Flask
+from sqlalchemy_utils import create_database, database_exists
 
-app = Flask(__name__)
+from config import Config
+from populate_data import get_users, get_goods, get_stores
+from database import db, User, Good, Store
 
 
-@app.route('/')
-def hello():
-    return "<h1>Hello from flask app</h1>"
+def create_app():
+    app = Flask(__name__)
+    app.config.from_object(Config)
+    db.init_app(app)
+
+    with app.app_context():
+        if database_exists(db.engine.url):
+            db.create_all()
+            print('Database exists')
+        else:
+            print(f"Database does not exists {db.engine.url}")
+            create_database(db.engine.url)
+            db.create_all()
+            print('Database created')
+
+    fill_db(app, get_users, User)
+    fill_db(app, get_goods, Good)
+    fill_db(app, get_stores, Store)
+
+    return app
+
+
+def fill_db(app, func_for_fill, model):
+    with app.app_context():
+        elements = func_for_fill()
+        for element in elements:
+            db.session.add(model(**element))
+        db.session.commit()
+        print(f'{model.__name__} fill in DB successfully')
 
 
 if __name__ == "__main__":
-    app.run(debug=True, host='0.0.0.0', port=5001)
+    app = create_app()
+    app.run()

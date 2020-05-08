@@ -3,14 +3,17 @@ version: '3.7'
 services:
   flask:
     build: .
+    command: python app.py
+    depends_on:
+      - psql
     ports:
       - 5000:5001
 
-  # database:
-  #   image: postgres:latest
-  #   environment:
-  #     - POSTGRES_USER=cursor
-  #     - POSTGRES_PASSWORD=very_secret_password
-  #     - POSTGRES_DB=docker_flask_db
-  #   ports:
-  #     - 5432:5432
+  psql:
+    image: postgres:latest
+    environment:
+      - POSTGRES_USER=cursor
+      - POSTGRES_PASSWORD=very_secret_password
+      - POSTGRES_DB=docker_flask_db
+    ports:
+      - 5432:5432
