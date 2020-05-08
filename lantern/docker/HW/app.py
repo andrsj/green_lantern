@@ -1,4 +1,5 @@
 from flask import Flask
+from logging import info
 from sqlalchemy_utils import create_database, database_exists
 
 from config import Config
@@ -14,12 +15,12 @@ def create_app():
     with app.app_context():
         if database_exists(db.engine.url):
             db.create_all()
-            print('Database exists')
+            info(f'Database \'{Config.DB_NAME}\' exists')
         else:
-            print(f"Database does not exists {db.engine.url}")
+            info(f"Database does not exists {db.engine.url}")
             create_database(db.engine.url)
             db.create_all()
-            print('Database created')
+            info(f'Database \'{Config.DB_NAME}\' created')
 
     fill_db(app, get_users, User)
     fill_db(app, get_goods, Good)
@@ -34,7 +35,7 @@ def fill_db(app, func_for_fill, model):
         for element in elements:
             db.session.add(model(**element))
         db.session.commit()
-        print(f'{model.__name__} fill in DB successfully')
+        info(f'{model.__name__} fill in DB successfully')
 
 
 if __name__ == "__main__":
