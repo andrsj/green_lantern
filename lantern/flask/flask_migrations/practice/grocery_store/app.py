@@ -1,6 +1,11 @@
 from flask import Flask
+<<<<<<< HEAD
 from flask_script import Server, Manager
 from flask_migrate import MigrateCommand
+=======
+from flask_sqlalchemy import SQLAlchemy
+from flask_script import Server, Manager
+>>>>>>> 6f0c3857e9ca686bf53e9ceb682f2a2afbfbaa8f
 
 from grocery_store.config import Config
 from grocery_store.routes import users, goods, stores
