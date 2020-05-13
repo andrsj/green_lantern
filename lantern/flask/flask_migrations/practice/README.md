@@ -1,6 +1,6 @@
-# to start work on project being in practice_2 folder
+# to start work on project being in practice folder
 
-    $ pip install -r practice_2/grocery_store/requirements.txt
+    $ pip install -r grocery_store/requirements.txt
     $ pip install -e .
 
 review config in grocery_store/config.py
