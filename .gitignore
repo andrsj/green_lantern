@@ -3,4 +3,8 @@ __pycache__/
 *.pyc
 .idea/
 .vscode/
-
+*.egg-info/
+.DS_Store/
+.DS_Store
+./**/.data/
+lantern/django/django_intro/docker/envs/.**
