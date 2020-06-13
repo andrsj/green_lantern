@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+{% set sum = [0] -%}
+<h2 class="title">
+  My orders:
+</h2>
+<table class="table" style='text-align: "center"'>
+    <tr>
+        <th>Store</th>
+        <th>Date</th>
+        <th>Good</th>
+        <th>Price</th>
+    </tr>
+    {%  for order in orders %}
+        <tr>
+            <td>{{ order.store_name }}</td>
+            <td>{{ order.created_time }}</td>
+            <td></td>
+            <td></td>
+        </tr>
+        {% for name, price in order.goods.items() %}
+                <tr>
+                <td></td>
+                <td></td>
+                <td>{{ name }}</td>
+                <td>{{ price }}</td>
+            </tr>
+            {% if sum.append(sum.pop()+ price) -%}{% endif %}
+        {% endfor %}
+        <tr>
+            <td></td>
+            <td></td>
+            <td><b>Order sum</b></td>
+            <td><b>{{ order.summa }}</b></td>
+        </tr>
+    {% endfor %}
+    <tr>
+        <td></td>
+        <td></td>
+        <td><b>Total sum</b></td>
+        <td><b>{{ sum[0] }}</b></td>
+    </tr>
+</table>
+{% endblock %}

@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template
-from grocery_store.database import db
 from flask_login import current_user, login_required
+from collections import namedtuple
+
 
 main = Blueprint('main', __name__)
 
@@ -13,4 +14,28 @@ def index():
 @main.route('/profile')
 @login_required
 def profile():
-    return render_template('profile.html', user=current_user.name, email=current_user.email)
+    return render_template(
+        'profile.html', 
+        user=current_user.name, 
+        email=current_user.email
+    )
+
+
+@main.route('/orders')
+@login_required
+def orders():
+    OrderList = namedtuple('OrderList', [
+        'store_name', 'created_time', 'summa', 'goods'
+    ])
+
+    orders_list = [
+        OrderList(
+            order.store.name,
+            order.created_time,
+            sum([good.good.price for good in order.order_lines]),
+            {good.good.name: good.good.price for good in order.order_lines}
+        )
+        for order in current_user.orders
+    ]
+
+    return render_template('orders.html', orders=orders_list)
